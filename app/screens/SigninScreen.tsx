@@ -49,3 +49,12 @@ const SigninScreen = () => {
 };
 
 export default SigninScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    padding: 20,
+  },
+});

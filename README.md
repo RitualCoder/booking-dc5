@@ -128,5 +128,5 @@ npm run dev
 ```sh
 cd app
 npm install
-npx expo start --ios
+npx expo start
 ```
