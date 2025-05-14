@@ -1,11 +1,11 @@
-export interface IUser {
-  id: number;
-  email: string;
+export interface User {
+  id: string;
   name: string;
+  email: string;
   role: string;
 }
 
-export interface CreateUserDTO {
+export interface CreateUserDto {
   email: string;
   password: string;
 }

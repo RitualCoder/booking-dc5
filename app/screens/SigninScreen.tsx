@@ -1,28 +1,30 @@
-import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import useAuth from "../hooks/useAuth";
+import { useAuth } from "../hook/useAuth";
+import React from "react";
+import { Link } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 
 const SigninScreen = () => {
-  const [credentials, setCredentials] = useState({
+  const { user, setUser, signIn } = useAuth();
+  const [credentials, setCredentials] = React.useState({
     email: "",
     password: "",
   });
-  const { signin } = useAuth();
+
   const navigation = useNavigation();
 
-  //  handlesubmit
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, padding: 16, gap: 16 }}>
       <Text>Sign Screen</Text>
 
-      {/* input email */}
       <TextInput
         placeholder="Email"
-        onChangeText={(text) => setCredentials({ ...credentials, email: text })}
+        onChangeText={(text) => {
+          setCredentials({ ...credentials, email: text });
+        }}
       />
-      {/* input password */}
+
       <TextInput
         placeholder="Password"
         secureTextEntry={true}
@@ -30,16 +32,18 @@ const SigninScreen = () => {
           setCredentials({ ...credentials, password: text })
         }
       />
+
       {/* submit button */}
       <Button
         mode="contained"
-        onPress={() => signin(credentials.email, credentials.password)}
+        onPress={() => signIn(credentials.email, credentials.password)}
       >
-        Signin
+        Se connecter
       </Button>
-      <Button onPress={() => navigation.navigate("Signup")}>
-        <Text>Signup</Text>
-      </Button>
+
+      <Button onPress={() => 
+        navigation.navigate('Signup')
+      }>S'inscrire</Button>
     </View>
   );
 };

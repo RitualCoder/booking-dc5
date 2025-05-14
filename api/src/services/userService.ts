@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma";
 import { hashPassword } from "../utils/password";
-import { CreateUserInput } from "../schemas/userSchema";
+import { CreateUserInput, UpdateUserInput } from "../schemas/userSchema";
 
 export class UserService {
   static async createUser(data: CreateUserInput) {
@@ -70,6 +70,22 @@ export class UserService {
   static async getCurrentUser(userId: number) {
     return prisma.user.findUnique({
       where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  static async updateUser(id: number, data: Partial<UpdateUserInput>) {
+    console.log("data : ", data, "id : ", id);
+    return prisma.user.update({
+      where: { id },
+      data,
       select: {
         id: true,
         email: true,

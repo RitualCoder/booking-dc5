@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from "react";
-import { IUser } from "../types/user.type";
+import { User } from "../types/user.type";
 import { getToken } from "../utils/token";
 import UserService from "../services/user.service";
 
 const AuthContext = createContext<{
-  user: IUser | null;
-  setUser: (user: IUser | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
 }>({
   user: null,
   setUser: () => {},
@@ -16,7 +16,7 @@ interface AuthContextProviderProps {
 }
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     initialize();
@@ -24,15 +24,13 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const initialize = async () => {
     const token = await getToken();
-    console.log("token", token);
     if (token) {
-      fetchCurrentUser();
+      fetchUser();
     }
   };
 
-  const fetchCurrentUser = async () => {
+  const fetchUser = async () => {
     const user = await UserService.fetchCurrentUser();
-    console.log("user", user);
     setUser(user);
   };
 

@@ -19,7 +19,7 @@ export const createReservation = async (c: Context) => {
       ...validatedData,
       userId: user.userId,
     });
-
+    console.log("reservation", reservation);
     return c.json(reservation, 201);
   } catch (error: unknown) {
     console.error("Error creating reservation:", error);
