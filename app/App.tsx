@@ -1,5 +1,10 @@
+import AuthContext, { AuthContextProvider } from "./context/AuthContext";
 import MainNavigation from "./navigation/MainNavigation";
 
 export default function App() {
-  return <MainNavigation />;
+  return (
+    <AuthContextProvider>
+      <MainNavigation />
+    </AuthContextProvider>
+  );
 }

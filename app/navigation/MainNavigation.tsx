@@ -2,20 +2,25 @@ import { createStackNavigator } from "@react-navigation/stack";
 import SigninScreen from "../screens/SigninScreen";
 import TabNavigation from "./TabNavigation";
 import { NavigationContainer } from "@react-navigation/native";
-import { useState } from "react";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+import SignupScreen from "../screens/SignupScreen";
 
 const MainNavigation = () => {
-  const [connected, setConnected] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const Stack = createStackNavigator();
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!connected ? (
-          <Stack.Screen name="Signin" component={SigninScreen} />
+        {!user ? (
+          <>
+            <Stack.Screen name="Signin" component={SigninScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+          </>
         ) : (
-          <Stack.Screen name="Tab" component={TabNavigation} />
+          <Stack.Screen name="Tab" component={TabNavigation} options={{ headerShown: false }} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

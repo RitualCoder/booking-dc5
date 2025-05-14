@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Card } from "react-native-paper";
+import ClassRoomService from "../services/classroom.service";
+import { useNavigation } from "@react-navigation/native";
 
 const ClassroomsScreen = () => {
+  const navigation = useNavigation();
   const [classrooms, setClassrooms] = useState([]);
 
   useEffect(() => {
@@ -11,17 +14,20 @@ const ClassroomsScreen = () => {
   }, []);
 
   const fetchAllClassrooms = async () => {
-    const response = await fetch("http://localhost:8000/api/classrooms");
-    const data = await response.json();
-    console.log(data);
-    setClassrooms(data);
+    const response = await ClassRoomService.fetchAll();
+    setClassrooms(response);
   };
 
   return (
     <View>
       <View style={styles.classroomsContainer}>
         {classrooms.map((classroom) => (
-          <Card key={classroom.id}>
+          <Card
+            key={classroom.id}
+            onPress={() =>
+              navigation.navigate("ClassroomsDetails", { id: classroom.id })
+            }
+          >
             <Card.Title title={classroom.name} titleStyle={styles.cardTitle} />
             <Card.Content>
               <Text>{classroom.capacity}</Text>
