@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import useAuth from "../hooks/useAuth";
+import { useNavigation } from "@react-navigation/native";
 
 const SigninScreen = () => {
   const [credentials, setCredentials] = useState({
@@ -9,6 +10,7 @@ const SigninScreen = () => {
     password: "",
   });
   const { signin } = useAuth();
+  const navigation = useNavigation();
 
   //  handlesubmit
   return (
@@ -34,6 +36,9 @@ const SigninScreen = () => {
         onPress={() => signin(credentials.email, credentials.password)}
       >
         Signin
+      </Button>
+      <Button onPress={() => navigation.navigate("Signup")}>
+        <Text>Signup</Text>
       </Button>
     </View>
   );
