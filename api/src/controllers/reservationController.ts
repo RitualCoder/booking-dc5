@@ -4,10 +4,8 @@ import { createReservationSchema } from "../schemas/reservationSchema";
 import { ZodError } from "zod";
 
 export const createReservation = async (c: Context) => {
-  console.log("createReservation", c.req.json());
   try {
     const user = c.get("user");
-    console.log("user", user);
     if (!user) {
       return c.json({ error: "User not authenticated" }, 401);
     }
@@ -19,7 +17,6 @@ export const createReservation = async (c: Context) => {
       ...validatedData,
       userId: user.userId,
     });
-    console.log("reservation", reservation);
     return c.json(reservation, 201);
   } catch (error: unknown) {
     console.error("Error creating reservation:", error);
@@ -36,7 +33,6 @@ export const createReservation = async (c: Context) => {
 export const getMyReservations = async (c: Context) => {
   try {
     const userContext = c.get("user");
-    console.log("userContext : ", userContext);
     const userId = userContext.userId;
 
     if (!userId) {
@@ -90,7 +86,6 @@ export const getReservationById = async (c: Context) => {
 export const deleteReservation = async (c: Context) => {
   try {
     const userContext = c.get("user");
-    console.log("userContext : ", userContext);
     const userId = userContext.userId;
     if (!userId) {
       return c.json({ error: "User not authenticated" }, 401);

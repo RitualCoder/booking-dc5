@@ -82,7 +82,6 @@ export class UserService {
   }
 
   static async updateUser(id: number, data: Partial<UpdateUserInput>) {
-    console.log("data : ", data, "id : ", id);
     return prisma.user.update({
       where: { id },
       data,

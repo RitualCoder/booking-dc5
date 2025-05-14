@@ -55,20 +55,16 @@ export const createUser = async (c: Context) => {
 };
 
 export const getCurrentUser = async (c: Context) => {
-  console.log("getCurrentUser", c.get("user"));
   try {
     const userContext = c.get("user");
-    console.log("userContext : ", userContext);
     const userId = userContext.userId;
 
-    console.log("userId : ", userId);
     if (!userId) {
       return c.json({ error: "User not authenticated" }, 401);
     }
 
     const user = await UserService.getCurrentUser(userId);
 
-    console.log("user : ", user);
 
     if (!user) {
       return c.json({ error: "User not found" }, 404);

@@ -42,7 +42,6 @@ const SignupScreen = () => {
       <Button
         mode="contained"
         onPress={() => {
-          console.log("credentials", credentials);
           signUp(credentials.name, credentials.email, credentials.password);
         }}
       >

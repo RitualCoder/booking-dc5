@@ -9,7 +9,7 @@ const ClassroomStack: React.FC = () => {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Classrooms" component={ClassroomsScreen} />
+      <Stack.Screen name="Classrooms List" component={ClassroomsScreen} />
       <Stack.Screen
         name="ClassroomsDetails"
         component={ClassroomDetailsScreen}

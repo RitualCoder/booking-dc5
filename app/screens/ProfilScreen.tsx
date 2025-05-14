@@ -34,7 +34,6 @@ const ProfilScreen = () => {
         name: credentials.name,
         email: credentials.email,
       }
-      console.log("credentials", credentials);
       updateUser(user.id, data);
     }
   }

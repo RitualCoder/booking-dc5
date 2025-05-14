@@ -65,8 +65,6 @@ app.route("/api", api);
 
 // Démarrer le serveur
 const port = 8000;
-console.log(`Serveur démarré sur http://localhost:${port}`);
-console.log(`Documentation API disponible sur http://localhost:${port}/api`);
 
 serve({
   fetch: app.fetch,

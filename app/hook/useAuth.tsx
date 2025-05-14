@@ -29,7 +29,6 @@ export const useAuth = () => {
     try {
       const response = await AuthService.signUp(name, email, password);
 
-      console.log("response", response);
       setToken(response.token);
       setUser(response.user);
     } catch (error) {

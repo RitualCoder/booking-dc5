@@ -64,13 +64,13 @@ npm install yup @hookform/resolvers
 
 ### Niveau 7 - Gestion des réservations pour l'utilisateur
 
-- [ ] Création de l'écran de gestion des réservations
-- [ ] Affichage des réservations en cours et passées
-- [ ] Possibilité de supprimer une réservation
+- [x] Création de l'écran de gestion des réservations
+- [x] Affichage des réservations en cours et passées
+- [x] Possibilité de supprimer une réservation
 
 ### Niveau 8 - Amélioration de l'expérience utilisateur
 
-- [ ] Ajout de la possibilité de filtrer les salles (par nom, par capacité, etc.)
+- [x] Ajout de la possibilité de filtrer les salles (par nom, par capacité, etc.)
 - [ ] Ajout la possibilité de réordonner les salles dans la liste (par nom, par capacité, etc.)
 
 ## Endpoints d'API

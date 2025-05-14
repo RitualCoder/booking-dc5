@@ -1,15 +1,12 @@
 import api from "./api.service";
 
 const fetchById = async (id: string) => {
-  console.log("fetchById", id);
   const response = await api.get(`/reservations/classroom/${id}`);
-  console.log("response", response);
   return response.data;
 };
 
 const bookClassroom = async (data: any) => {
   const response = await api.post("/reservations", data);
-  console.log("response data", response.data);
   return response.data;
 };
 
@@ -18,10 +15,16 @@ const fetchAll = async () => {
   return response.data;
 };
 
+const deleteOne = async (id: string) => {
+  const response = await api.delete(`/reservations/${id}`);
+  return response.data;
+};
+
 const ReservationService = {
   fetchById,
   bookClassroom,
-    fetchAll,
+  fetchAll,
+  deleteOne,
 };
 
 export default ReservationService;

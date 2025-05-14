@@ -109,8 +109,6 @@ async function main() {
       },
     }),
   ]);
-
-  console.log("Base de données initialisée avec des données de test");
 }
 
 main()
