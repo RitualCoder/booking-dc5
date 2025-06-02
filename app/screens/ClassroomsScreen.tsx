@@ -1,14 +1,28 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import {
   Card,
   Searchbar,
   TextInput,
   Chip,
   SegmentedButtons,
+  Button,
 } from "react-native-paper";
 import ClassRoomService from "../services/classroom.service";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+
+const BLUE = "#2563eb";
+const BLUE_PALE = "#e6eeff";
+const BG = "#f7f9fb";
+const TEXT = "#22223b";
+const MUTED = "#64748b";
 
 const ClassroomsScreen = () => {
   const navigation = useNavigation();
@@ -17,14 +31,15 @@ const ClassroomsScreen = () => {
   const [minCapacity, setMinCapacity] = useState("");
   const [equipmentFilter, setEquipmentFilter] = useState<string[]>([]);
 
-  // tri : valeur initiale name-asc
   const [sortOption, setSortOption] = useState<
     "name-asc" | "name-desc" | "cap-asc" | "cap-desc"
   >("name-asc");
 
-  useEffect(() => {
-    fetchAllClassrooms();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllClassrooms();
+    }, [])
+  );
 
   const fetchAllClassrooms = async () => {
     try {
@@ -35,7 +50,10 @@ const ClassroomsScreen = () => {
     }
   };
 
-  // récupère tous les équipements disponibles
+  const createRoom = () => {
+    navigation.navigate("ClassroomForm");
+  };
+
   const allEquipment = useMemo(() => {
     const s = new Set<string>();
     classrooms.forEach((c) => {
@@ -51,7 +69,6 @@ const ClassroomsScreen = () => {
     );
   };
 
-  // filtre texte / capacité / équipements
   const filteredClassrooms = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     const minCap = parseInt(minCapacity, 10) || 0;
@@ -69,7 +86,6 @@ const ClassroomsScreen = () => {
     });
   }, [searchQuery, minCapacity, equipmentFilter, classrooms]);
 
-  // tri final avec segmented buttons
   const sortedClassrooms = useMemo(() => {
     const arr = [...filteredClassrooms];
     switch (sortOption) {
@@ -91,12 +107,24 @@ const ClassroomsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Button
+        mode="contained"
+        style={styles.createButton}
+        labelStyle={{ fontWeight: "600", color: "#fff" }}
+        onPress={createRoom}
+        buttonColor={BLUE}
+      >
+        + Créer une salle
+      </Button>
+
       <Searchbar
         placeholder="Rechercher une salle…"
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={styles.searchbar}
-        clearIcon="close"
+        inputStyle={{ color: TEXT }}
+        iconColor={MUTED}
+        theme={{ colors: { primary: BLUE } }}
       />
 
       <TextInput
@@ -104,59 +132,129 @@ const ClassroomsScreen = () => {
         mode="outlined"
         keyboardType="number-pad"
         value={minCapacity}
-        onChangeText={setMinCapacity}
+        onChangeText={(t) => setMinCapacity(t.replace(/[^0-9]/g, ""))}
         style={styles.input}
+        left={<TextInput.Icon icon="account-group" />}
+        theme={{
+          colors: {
+            primary: BLUE,
+            background: "#fff",
+            onSurfaceVariant: MUTED,
+          },
+        }}
       />
 
       <Text style={styles.label}>Équipements :</Text>
-      <View style={styles.chipRow}>
-        {allEquipment.map((eq) => (
-          <Chip
-            key={eq}
-            selected={equipmentFilter.includes(eq)}
-            onPress={() => toggleEquipment(eq)}
-            style={styles.chip}
-          >
-            {eq}
-          </Chip>
-        ))}
-      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.chipRow}
+      >
+        {allEquipment.length > 0 ? (
+          allEquipment.map((eq) => {
+            const selected = equipmentFilter.includes(eq);
+            return (
+              <Chip
+                key={eq}
+                selected={selected}
+                onPress={() => toggleEquipment(eq)}
+                style={[
+                  styles.chip,
+                  selected
+                    ? {
+                        backgroundColor: BLUE,
+                        borderColor: BLUE,
+                      }
+                    : {
+                        backgroundColor: BLUE_PALE,
+                        borderColor: BLUE,
+                      },
+                ]}
+                textStyle={{
+                  color: selected ? "#fff" : BLUE,
+                  fontWeight: selected ? "600" : "500",
+                }}
+                contentStyle={styles.chipContent}
+                showSelectedOverlay={false}
+              >
+                {eq}
+              </Chip>
+            );
+          })
+        ) : (
+          <Text style={styles.noEqText}>Aucun équipement disponible</Text>
+        )}
+      </ScrollView>
 
-      {/* -- Nouveau contrôle de tri */}
       <Text style={styles.label}>Trier par :</Text>
       <SegmentedButtons
         value={sortOption}
         onValueChange={setSortOption}
         buttons={[
-          { value: "name-asc", label: "Nom A→Z" },
-          { value: "name-desc", label: "Nom Z→A" },
-          { value: "cap-asc", label: "Cap ↑" },
-          { value: "cap-desc", label: "Cap ↓" },
+          {
+            value: "name-asc",
+            label: "Nom A→Z",
+            uncheckedColor: MUTED,
+          },
+          {
+            value: "name-desc",
+            label: "Nom Z→A",
+            uncheckedColor: MUTED,
+          },
+          {
+            value: "cap-asc",
+            label: "Cap ↑",
+            uncheckedColor: MUTED,
+          },
+          {
+            value: "cap-desc",
+            label: "Cap ↓",
+            uncheckedColor: MUTED,
+          },
         ]}
         style={styles.segmented}
+        density={Platform.OS === "ios" ? "medium" : "regular"}
+        theme={{
+          colors: {
+            primary: "#2563eb",
+          },
+        }}
       />
 
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView contentContainerStyle={styles.listContainer}>
         {sortedClassrooms.length > 0 ? (
           sortedClassrooms.map((classroom) => (
-            <Card
+            <TouchableOpacity
               key={classroom.id}
-              style={styles.card}
+              activeOpacity={0.8}
               onPress={() =>
-                navigation.navigate("ClassroomsDetails", { id: classroom.id })
+                navigation.navigate("ClassroomsDetails", {
+                  id: classroom.id,
+                })
               }
+              style={styles.touchableCard}
             >
-              <Card.Title
-                title={classroom.name}
-                titleStyle={styles.cardTitle}
-              />
-              <Card.Content>
-                <Text>Capacité : {classroom.capacity}</Text>
-                {Array.isArray(classroom.equipment) && (
-                  <Text>Équipements : {classroom.equipment.join(", ")}</Text>
-                )}
-              </Card.Content>
-            </Card>
+              <Card style={styles.card} elevation={2}>
+                <View style={styles.cardContent}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.cardTitle}>{classroom.name}</Text>
+                    <Text style={styles.cardText}>
+                      Capacité :{" "}
+                      <Text style={styles.cardValue}>{classroom.capacity}</Text>
+                    </Text>
+                    {Array.isArray(classroom.equipment) &&
+                      classroom.equipment.length > 0 && (
+                        <Text style={styles.cardText}>
+                          Équipements :{" "}
+                          <Text style={styles.cardValue}>
+                            {classroom.equipment.join(", ")}
+                          </Text>
+                        </Text>
+                      )}
+                  </View>
+                </View>
+              </Card>
+            </TouchableOpacity>
           ))
         ) : (
           <Text style={styles.emptyText}>
@@ -173,25 +271,96 @@ const ClassroomsScreen = () => {
 export default ClassroomsScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-  searchbar: { marginBottom: 10 },
-  input: { marginBottom: 10 },
-  label: { fontWeight: "600", marginBottom: 4 },
-  chipRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 16,
+  container: {
+    flex: 1,
+    backgroundColor: BG,
+    paddingHorizontal: 12,
+    paddingTop: 12,
   },
-  chip: { marginVertical: 4 },
-  segmented: { marginBottom: 16 },
-  list: { gap: 10 },
-  card: { marginVertical: 4 },
-  cardTitle: { fontSize: 16, fontWeight: "bold", color: "blue" },
+  createButton: {
+    marginBottom: 12,
+    elevation: 1,
+  },
+  searchbar: {
+    marginBottom: 10,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    elevation: 1,
+  },
+  input: {
+    marginBottom: 14,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: TEXT,
+    marginBottom: 6,
+  },
+  chipRow: {
+    paddingVertical: 4,
+    height: 80,
+  },
+  chip: {
+    marginRight: 8,
+    borderWidth: 1,
+    height: 32,
+  },
+  chipContent: {
+    justifyContent: "center",
+  },
+  noEqText: {
+    color: MUTED,
+    fontStyle: "italic",
+    paddingVertical: 4,
+  },
+  segmented: {
+    marginBottom: 18,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    elevation: 1,
+  },
+  listContainer: {
+    paddingBottom: 20,
+    gap: 10,
+  },
+  touchableCard: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  card: {
+    backgroundColor: BLUE_PALE,
+    borderLeftWidth: 5,
+    borderLeftColor: BLUE,
+    marginVertical: 4,
+    borderRadius: 12,
+  },
+  cardContent: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: TEXT,
+    marginBottom: 4,
+  },
+  cardText: {
+    fontSize: 14,
+    color: MUTED,
+    marginBottom: 2,
+  },
+  cardValue: {
+    color: BLUE,
+    fontWeight: "600",
+  },
   emptyText: {
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 30,
     fontStyle: "italic",
-    color: "#666",
+    color: MUTED,
+    fontSize: 15,
   },
 });

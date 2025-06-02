@@ -33,14 +33,13 @@ const ProfilScreen = () => {
       const data = {
         name: credentials.name,
         email: credentials.email,
-      }
+      };
       updateUser(user.id, data);
     }
   }
 
   return (
-    <View style={{ flex: 1, padding: 16, gap: 16 }}>
-
+    <View style={{ flex: 1, padding: 16, paddingTop: 64, gap: 16 }}>
       <Button onPress={() => setEditMode(!editMode)}>
         {editMode ? "Annuler" : "Modifier"}
       </Button>
@@ -49,8 +48,8 @@ const ProfilScreen = () => {
         label="Nom"
         mode="outlined"
         value={credentials.name}
-        onChangeText={text =>
-          setCredentials(prev => ({ ...prev, name: text }))
+        onChangeText={(text) =>
+          setCredentials((prev) => ({ ...prev, name: text }))
         }
         disabled={!editMode}
       />
@@ -61,8 +60,8 @@ const ProfilScreen = () => {
         keyboardType="email-address"
         autoCapitalize="none"
         value={credentials.email}
-        onChangeText={text =>
-          setCredentials(prev => ({ ...prev, email: text }))
+        onChangeText={(text) =>
+          setCredentials((prev) => ({ ...prev, email: text }))
         }
         disabled={!editMode}
       />
